@@ -15,9 +15,8 @@ if ENV_FILE.exists():
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-wildfinder-secret-key-2025')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if host.strip()
+ALLOWED_HOSTS = ['wildvista-safaris.onrender.com', '127.0.0.1', 'localhost']
+
 ]
 
 CSRF_TRUSTED_ORIGINS = [
