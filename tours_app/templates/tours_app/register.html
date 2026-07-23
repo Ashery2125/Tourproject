@@ -1,0 +1,65 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+
+{% block title %}Register - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card register-card">
+            <div class="auth-header">
+                <span class="auth-icon">🦁</span>
+                <h2>Register</h2>
+                <p>Join WILDFinder for unforgettable safaris</p>
+            </div>
+            
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        {{ form.username }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Country</label>
+                        {{ form.country }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-city"></i> City</label>
+                        {{ form.city }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        {{ form.password1 }}
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Confirm Password</label>
+                        {{ form.password2 }}
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-block"><i class="fas fa-user-plus"></i> Register</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

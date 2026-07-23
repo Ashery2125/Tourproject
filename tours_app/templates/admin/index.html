@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_metrics %}
+
+{% block content_title %}{% endblock %}
+{% block messages %}{% endblock %}
+
+{% block content %}
+{% admin_count 'booking' as booking_count %}
+{% admin_count 'destination' as destination_count %}
+{% admin_count 'trip' as trip_count %}
+{% admin_count 'pending_booking' as pending_requests %}
+
+<div class="safari-dashboard">
+    <section class="dashboard-heading">
+        <div><p class="eyebrow">WILDVISTA SAFARI COMMAND CENTRE</p><h1>Safari operations overview</h1><p>Manage your safari operations from one premium dashboard.</p></div>
+        <div class="today-chip"><span>◷</span> {% now "F j, Y" %}</div>
+    </section>
+
+    <section class="metric-grid">
+        <article class="metric-card"><span class="metric-icon gold">▣</span><div><strong>{{ booking_count }}</strong><span>Bookings</span></div><small>Safari reservations</small></article>
+        <article class="metric-card"><span class="metric-icon green">⌂</span><div><strong>{{ pending_requests }}</strong><span>Pending requests</span></div><small>Awaiting approval</small></article>
+        <article class="metric-card"><span class="metric-icon green">▤</span><div><strong>{{ trip_count }}</strong><span>Active trips</span></div><small>Ready to book</small></article>
+        <article class="metric-card"><span class="metric-icon gold">◉</span><div><strong>{{ user.get_username|default:"Admin" }}</strong><span>Safari manager</span></div><small>Operations control</small></article>
+    </section>
+
+    <section class="dashboard-columns">
+        <div class="dashboard-panel management-panel">
+            <div class="panel-heading"><div><h2>Management modules</h2><p>Quick access to manage your safari operations.</p></div></div>
+            <div class="module-group"><h3>SAFARI OPERATIONS</h3>
+                <a href="{% url 'admin:tours_app_booking_changelist' %}"><span>▣</span> Bookings <b>Manage →</b></a>
+                <a href="{% url 'admin:tours_app_destination_changelist' %}"><span>⌖</span> Destinations <b>Manage →</b></a>
+                <a href="{% url 'admin:tours_app_trip_changelist' %}"><span>▤</span> Trips <b>Manage →</b></a>
+                <a href="{% url 'admin:tours_app_siteappearance_changelist' %}"><span>◌</span> Site experience <b>Manage →</b></a>
+            </div>
+            <div class="module-group"><h3>ACCOUNT MANAGEMENT</h3>
+                <a href="{% url 'admin:auth_user_changelist' %}"><span>♟</span> Users <b>Manage →</b></a>
+                <a href="{% url 'admin:auth_group_changelist' %}"><span>♚</span> Groups <b>Manage →</b></a>
+            </div>
+        </div>
+
+        <div class="dashboard-stack">
+            <article class="dashboard-panel recent-panel"><div class="panel-heading"><div><h2>Recent bookings</h2><p>Latest safari reservations.</p></div><a href="{% url 'admin:tours_app_booking_changelist' %}">View all</a></div>
+                <div class="recent-list">{% recent_bookings as bookings %}{% for booking in bookings %}<div><span class="recent-badge">▣</span><p><strong>{{ booking.full_name }}</strong><small>{{ booking.trip.name }} · {{ booking.created_at|timesince }} ago</small></p><em>{{ booking.get_status_display }}</em></div>{% empty %}<p class="empty-copy">No bookings yet. Add the first safari booking.</p>{% endfor %}</div>
+            </article>
+            <article class="dashboard-panel status-panel"><h2>System status</h2><div><span>Admin system</span><b>Online ●</b></div><div><span>Database</span><b>Healthy ●</b></div><div><span>Media settings</span><b>Ready ●</b></div></article>
+        </div>
+    </section>
+
+    <section class="dashboard-bottom">
+        <article class="dashboard-panel bookings-chart"><div><h2>Bookings overview</h2><p>Current booking snapshot</p></div><div class="donut"><span>{{ booking_count }}<small>Total</small></span></div><p class="chart-note"><i></i> Confirmed &amp; pending safari journeys</p></article>
+        <article class="dashboard-panel"><div class="panel-heading"><div><h2>Quick actions</h2><p>Create a record in one click.</p></div></div><div class="quick-actions"><a href="{% url 'admin:tours_app_booking_add' %}">▣<span>Add booking</span></a><a href="{% url 'admin:tours_app_destination_add' %}">⌖<span>Add destination</span></a><a href="{% url 'admin:tours_app_trip_add' %}">▤<span>Add trip</span></a><a href="{% url 'admin:auth_user_add' %}">♟<span>Add user</span></a></div></article>
+    </section>
+</div>
+{% endblock %}

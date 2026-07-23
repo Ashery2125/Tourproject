@@ -1,0 +1,30 @@
+{% extends 'tours_app/base.html' %}
+
+{% block title %}Cancel Booking - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <span class="auth-icon"><i class="fas fa-calendar-xmark"></i></span>
+                <h2>Cancel booking #{{ booking.id }}</h2>
+                <p>{{ booking.trip.name }}</p>
+            </div>
+
+            <div class="booking-details">
+                <div class="detail-row"><span class="label">Name:</span><span class="value">{{ booking.full_name }}</span></div>
+                <div class="detail-row"><span class="label">Seats:</span><span class="value">{{ booking.number_of_seats }}</span></div>
+                <div class="detail-row"><span class="label">Status:</span><span class="value">{{ booking.get_status_display }}</span></div>
+                <div class="detail-row"><span class="label">Total:</span><span class="value">${{ booking.total_price }}</span></div>
+            </div>
+
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger btn-block"><i class="fas fa-times"></i> Confirm cancellation</button>
+                <a href="{% url 'my_bookings' %}" class="btn-primary btn-block">Keep booking</a>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="admin-page">
+    <header class="admin-page-heading"><p class="eyebrow">OPERATIONS INTELLIGENCE</p><h1>{{ page_title }}</h1><p>{{ page_subtitle }}</p></header>
+    <section class="metric-grid report-metrics">
+        <article class="metric-card"><span class="metric-icon green">&#9635;</span><div><strong>{{ booking_count }}</strong><span>Total bookings</span></div></article>
+        <article class="metric-card"><span class="metric-icon gold">&#9639;</span><div><strong>{{ trip_count }}</strong><span>Trips</span></div></article>
+        <article class="metric-card"><span class="metric-icon green">&#9678;</span><div><strong>{{ destination_count }}</strong><span>Destinations</span></div></article>
+        <article class="metric-card"><span class="metric-icon gold">$</span><div><strong>{{ total_revenue }}</strong><span>Booking value</span></div></article>
+    </section>
+    <section class="admin-page-grid">
+        <article class="dashboard-panel"><h2>Bookings by status</h2><table class="command-table"><thead><tr><th>Status</th><th>Total</th></tr></thead><tbody>{% for item in bookings_by_status %}<tr><td>{{ item.status|title }}</td><td>{{ item.total }}</td></tr>{% empty %}<tr><td colspan="2">No bookings recorded yet.</td></tr>{% endfor %}</tbody></table></article>
+        <article class="dashboard-panel"><h2>Top trips</h2><table class="command-table"><thead><tr><th>Trip</th><th>Bookings</th></tr></thead><tbody>{% for trip in top_trips %}<tr><td>{{ trip.name }}</td><td>{{ trip.booking_total }}</td></tr>{% empty %}<tr><td colspan="2">No trips recorded yet.</td></tr>{% endfor %}</tbody></table></article>
+    </section>
+</div>
+{% endblock %}

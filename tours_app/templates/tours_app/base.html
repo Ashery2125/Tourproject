@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WildVista Safaris</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tours_app/css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="{% url 'index' %}" class="logo">
+                <span class="logo-image-wrap"><img src="{% static 'tours_app/images/logo.png' %}" alt="WildVista Safaris"></span>
+                <span class="logo-name">
+                    <strong>WildVista Safaris</strong>
+                    <small>Arusha • Tanzania</small>
+                </span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'trips' %}">Explore Safaris</a></li>
+                <li><a href="{% url 'group_trips' %}">Group Trips</a></li>
+                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'my_bookings' %}">My Bookings</a></li>
+                    <li><a href="{% url 'profile' %}">{{ user.username }}</a></li>
+                    <li><a href="{% url 'logout' %}" class="btn-logout">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="btn-login">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="btn-register">Register</a></li>
+                {% endif %}
+            </ul>
+            <div class="header-actions">
+                <div class="currency-switcher" id="currencySwitcher">
+                    <button type="button" class="currency-option active" data-currency="USD">USD $</button>
+                    <button type="button" class="currency-option" data-currency="TZS">TZS TSh</button>
+                </div>
+                <div class="hamburger" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        const currencyButtons = document.querySelectorAll('.currency-option');
+        const formatCurrencyValue = (value, currency) => {
+            if (currency === 'TZS') {
+                return `TSh ${Math.round(value * 2500).toLocaleString()}`;
+            }
+            return `$${value}`;
+        };
+
+        currencyButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                currencyButtons.forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+                const currency = button.dataset.currency;
+                document.querySelectorAll('[data-usd]').forEach(item => {
+                    const usdValue = parseFloat(item.dataset.usd);
+                    if (!Number.isFinite(usdValue)) return;
+                    item.textContent = formatCurrencyValue(usdValue, currency);
+                });
+            });
+        });
+
+        const heroVideo = document.getElementById('heroVideo');
+        const watchSafariVideoButton = document.getElementById('watchSafariVideoButton');
+
+        if (heroVideo) {
+            heroVideo.addEventListener('loadeddata', () => {
+                heroVideo.classList.add('is-ready');
+            });
+            heroVideo.addEventListener('error', () => {
+                heroVideo.style.display = 'none';
+            });
+        }
+
+        if (watchSafariVideoButton && heroVideo) {
+            watchSafariVideoButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                heroVideo.play().catch(() => {});
+            });
+        }
+    </script>
+
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-brand-col">
+                    <div class="footer-brand-block">
+                        <img class="footer-logo" src="{% static 'tours_app/images/logo.png' %}" alt="WildVista Safaris">
+                        <div class="footer-brand-text">
+                            <strong>WildVista</strong>
+                            <span>Safaris</span>
+                        </div>
+                    </div>
+                    <p>Explore the beautiful destinations of Tanzania with luxury safari service.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'trips' %}">Explore Safaris</a></li>
+                        <li><a href="{% url 'group_trips' %}">Group Trips</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-phone"></i> <a href="https://wa.me/255794872433" target="_blank" rel="noreferrer">+255 794 872 433</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:wildvistasafaris@gmail.com">wildvistasafaris@gmail.com</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Arusha, Tanzania</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 WildVista Safaris. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+{% load tour_extras %}
+
+{% block title %}My Bookings - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="bookings-section">
+    <div class="container">
+        <div class="section-header">
+            <h1><i class="fas fa-ticket-alt"></i> My Bookings</h1>
+            <p>View and manage your bookings</p>
+        </div>
+        
+        {% if bookings %}
+            <div class="bookings-list">
+                {% for booking in bookings %}
+                <div class="booking-item">
+                    <div class="booking-header">
+                        <div class="booking-id"><span class="label">Booking #</span><span class="value">{{ booking.id }}</span></div>
+                        <div class="booking-status"><span class="badge badge-{{ booking.status|status_badge }}">{{ booking.get_status_display }}</span></div>
+                    </div>
+                    <div class="booking-body">
+                        <div class="booking-trip">
+                            <h3>{{ booking.trip.name }}</h3>
+                            <p class="booking-meta">
+                                <span><i class="fas fa-calendar-alt"></i> {{ booking.trip.start_date|date:"d M Y" }}</span>
+                                <span><i class="fas fa-clock"></i> {{ booking.trip.duration_days }} days</span>
+                                <span><i class="fas fa-user-tag"></i> {{ booking.get_tourist_type_display }}</span>
+                            </p>
+                        </div>
+                        <div class="booking-details">
+                            <div class="detail"><span class="label">Seats:</span><span class="value">{{ booking.number_of_seats }}</span></div>
+                            <div class="detail"><span class="label">Price:</span><span class="value">${{ booking.total_price }}</span></div>
+                            <div class="detail"><span class="label">Date:</span><span class="value">{{ booking.created_at|date:"d M Y, H:i" }}</span></div>
+                        </div>
+                        {% if booking.status != 'CANCELLED' %}
+                            <div class="booking-actions">
+                                <a href="{% url 'cancel_booking' booking.id %}" class="btn-danger btn-sm"><i class="fas fa-times"></i> Cancel</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-ticket-alt"></i>
+                <h3>No Bookings Yet</h3>
+                <p>Start booking by choosing a trip that suits you</p>
+                <a href="{% url 'trips' %}" class="btn-primary"><i class="fas fa-search"></i> Find a Trip</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

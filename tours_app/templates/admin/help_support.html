@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="admin-page">
+    <header class="admin-page-heading"><p class="eyebrow">SUPPORT CENTRE</p><h1>{{ page_title }}</h1><p>{{ page_subtitle }}</p></header>
+    <section class="admin-page-grid help-grid">
+        <article class="dashboard-panel"><h2>Daily workflow</h2><ol><li>Review new bookings and confirm or decline requests.</li><li>Keep trip dates, prices, availability and destinations current.</li><li>Use Site experience to update the public homepage media.</li></ol></article>
+        <article class="dashboard-panel"><h2>Quick links</h2><div class="quick-actions"><a href="{% url 'admin:tours_app_booking_changelist' %}">&#9635;<span>Manage bookings</span></a><a href="{% url 'admin:tours_app_trip_changelist' %}">&#9639;<span>Manage trips</span></a></div></article>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+{% load tour_extras %}
+
+{% block title %}{{ trip.name }} - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="trip-detail-section">
+    <div class="container">
+        <div class="trip-detail-grid">
+            <div class="trip-detail-main">
+                <div class="trip-detail-image">
+                    <img src="{{ trip.image_url }}" alt="{{ trip.name }}">
+                    <div class="trip-detail-status">
+                        {% if trip.is_full %}
+                            <span class="badge-full">Full</span>
+                        {% else %}
+                            <span class="badge-available">Available</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="trip-detail-info">
+                    <h1>{{ trip.name }}</h1>
+                    <div class="trip-detail-meta">
+                        <span><i class="fas fa-calendar-alt"></i> {{ trip.start_date|date:"d M Y" }} - {{ trip.end_date|date:"d M Y" }}</span>
+                        <span><i class="fas fa-clock"></i> {{ trip.duration_days }} days</span>
+                        <span><i class="fas fa-chair"></i> {{ trip.available_seats }}/{{ trip.total_seats }} seats</span>
+                        <span><i class="fas fa-flag"></i> {{ trip.get_trip_type_display }}</span>
+                    </div>
+                    
+                    <div class="trip-detail-description">
+                        <h3>Description</h3>
+                        <p>{{ trip.description }}</p>
+                    </div>
+                    
+                    <div class="trip-detail-inclusions">
+                        <h3>Includes</h3>
+                        <ul>
+                            {% if trip.includes_accommodation %}
+                                <li><i class="fas fa-hotel"></i> Accommodation</li>
+                            {% endif %}
+                            {% if trip.includes_meals %}
+                                <li><i class="fas fa-utensils"></i> Meals</li>
+                            {% endif %}
+                            {% if trip.includes_transport %}
+                                <li><i class="fas fa-bus"></i> Transport</li>
+                            {% endif %}
+                            {% if trip.includes_airport_pickup %}
+                                <li><i class="fas fa-plane"></i> Airport Pickup (KIA)</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="trip-detail-destinations">
+                        <h3>Destinations</h3>
+                        <div class="destination-tags">
+                            {% for dest in trip.destinations.all %}
+                                <span class="destination-tag">
+                                    {{ dest.name }}
+                                </span>
+                            {% empty %}
+                                <p>No destinations listed.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="trip-detail-sidebar">
+                <div class="booking-card">
+                        <h3>Book This Trip</h3>
+                        {% if trip.is_full %}
+                            <div class="alert alert-danger"><i class="fas fa-ban"></i> This trip is fully booked.</div>
+                        {% elif trip.is_past %}
+                            <div class="alert alert-danger"><i class="fas fa-clock"></i> This trip has passed.</div>
+                        {% else %}
+                            <div class="price-display">
+                                <span class="price-amount" data-usd="{{ trip.active_price }}">${{ trip.active_price }}</span>
+                                <span class="price-label">per day</span>
+                            </div>
+                            {% if trip.is_offer and trip.discount_price %}
+                                <div class="offer-strip">
+                                    <span class="original-price" data-usd="{{ trip.original_price }}">${{ trip.original_price }}</span>
+                                    <span class="offer-tag">Special Offer</span>
+                                </div>
+                            {% endif %}
+                            <div class="seat-copy">🔥 Viti {{ trip.available_seats }} bado zinapatikana</div>
+                            <form method="post" class="booking-form" id="bookingForm">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{ form.tourist_type.label_tag }}
+                                    {{ form.tourist_type }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.pickup_point.label_tag }}
+                                    {{ form.pickup_point }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.number_of_seats.label_tag }}
+                                    {{ form.number_of_seats }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.full_name.label_tag }}
+                                    {{ form.full_name }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.email.label_tag }}
+                                    {{ form.email }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.phone_number.label_tag }}
+                                    {{ form.phone_number }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.country.label_tag }}
+                                    {{ form.country }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.city.label_tag }}
+                                    {{ form.city }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.special_requests.label_tag }}
+                                    {{ form.special_requests }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.needs_airport_pickup.label_tag }}
+                                    {{ form.needs_airport_pickup }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.flight_number.label_tag }}
+                                    {{ form.flight_number }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.arrival_time.label_tag }}
+                                    {{ form.arrival_time }}
+                                </div>
+                                <button type="submit" class="btn-primary btn-block"><i class="fas fa-check-circle"></i> Book Now</button>
+                            </form>
+                        {% endif %}
+                    <div class="booking-info">
+                        <small><i class="fas fa-info-circle"></i> Booking confirmed after payment</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

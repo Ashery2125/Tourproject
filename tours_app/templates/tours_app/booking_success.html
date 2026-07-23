@@ -1,0 +1,32 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+
+{% block title %}Booking Successful - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="success-section">
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h1>Booking Successful!</h1>
+            <p class="success-message">Your booking has been received. We will contact you shortly.</p>
+            
+            <div class="booking-details">
+                <h3>Booking Details</h3>
+                <div class="detail-row"><span class="label">Booking ID:</span><span class="value">#{{ booking.id }}</span></div>
+                <div class="detail-row"><span class="label">Trip:</span><span class="value">{{ booking.trip.name }}</span></div>
+                <div class="detail-row"><span class="label">Name:</span><span class="value">{{ booking.full_name }}</span></div>
+                <div class="detail-row"><span class="label">Tourist Type:</span><span class="value">{{ booking.get_tourist_type_display }}</span></div>
+                <div class="detail-row"><span class="label">Seats:</span><span class="value">{{ booking.number_of_seats }}</span></div>
+                <div class="detail-row"><span class="label">Total Price:</span><span class="value">${{ booking.total_price }}</span></div>
+                <div class="detail-row"><span class="label">Status:</span><span class="value status-{{ booking.status|lower }}">{{ booking.get_status_display }}</span></div>
+            </div>
+            
+            <div class="success-actions">
+                <a href="{% url 'my_bookings' %}" class="btn-primary"><i class="fas fa-list"></i> My Bookings</a>
+                <a href="{% url 'trips' %}" class="btn-secondary"><i class="fas fa-search"></i> More Trips</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

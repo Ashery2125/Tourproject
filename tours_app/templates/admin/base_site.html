@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'tours_app/css/admin-theme.css' %}">
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% endblock %}
+
+{% block branding %}
+<a class="header-command-brand" href="{% url 'admin:index' %}" aria-label="WildVista command centre home">
+    <strong>SAFARI <em>COMMAND</em> CENTRE</strong>
+    <small>Manage your safari operations with ease</small>
+</a>
+{% endblock %}
+
+{% block usertools %}
+<div id="user-tools">
+    {% if user.is_authenticated %}
+        <span class="welcome">Welcome, <strong>{% firstof user.get_short_name user.get_username %}</strong><small>Super administrator</small></span>
+        <span class="admin-avatar" aria-hidden="true">{{ user.get_username|slice:":1"|upper }}</span>
+        <a class="header-icon" href="{% url 'index' %}" title="View website" aria-label="View website">&#8599;</a>
+        <a class="header-icon" href="{% url 'admin:password_change' %}" title="Change password" aria-label="Change password">&#9881;</a>
+        <form id="logout-form" method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button type="submit">Log out</button></form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block nav-sidebar %}
+<aside id="nav-sidebar" class="wildvista-sidebar" aria-label="Admin navigation">
+    <a class="sidebar-brand" href="{% url 'admin:index' %}"><span class="wildfinder-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M10 47c6-2 11-9 12-17 1-8 4-14 10-18 6 4 9 10 10 18 1 8 6 15 12 17H10Z" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 18v29M19 38h26M12 52h40" fill="none" stroke="currentColor" stroke-width="3"/></svg></span><span><strong>WILDVISTA</strong><small>SAFARIS</small></span></a>
+    <nav>
+        <a class="sidebar-link {% if request.path == '/admin/' %}is-active{% endif %}" href="{% url 'admin:index' %}"><span>&#9638;</span>Dashboard</a>
+        <p class="sidebar-label">Authentication</p>
+        <a class="sidebar-link" href="{% url 'admin:auth_group_changelist' %}"><span>&#9783;</span>Groups</a>
+        <a class="sidebar-link" href="{% url 'admin:auth_user_changelist' %}"><span>&#9787;</span>Users</a>
+        <p class="sidebar-label">Tours app</p>
+        <a class="sidebar-link" href="{% url 'admin:tours_app_booking_changelist' %}"><span>&#9635;</span>Bookings</a>
+        <a class="sidebar-link" href="{% url 'admin:tours_app_destination_changelist' %}"><span>&#9678;</span>Destinations</a>
+        <a class="sidebar-link" href="{% url 'admin:tours_app_siteappearance_changelist' %}"><span>&#10022;</span>Site experience</a>
+        <a class="sidebar-link" href="{% url 'admin:tours_app_trip_changelist' %}"><span>&#9639;</span>Trips</a>
+        <p class="sidebar-label">Operations</p>
+        <a class="sidebar-link" href="{% url 'admin_reports' %}"><span>&#9641;</span>Reports</a>
+        <a class="sidebar-link" href="{% url 'admin:tours_app_siteappearance_changelist' %}"><span>&#9881;</span>System settings</a>
+        <a class="sidebar-link" href="{% url 'admin_activity_logs' %}"><span>&#9776;</span>Activity logs</a>
+        <a class="sidebar-link" href="{% url 'admin_help_support' %}"><span>?</span>Help &amp; support</a>
+    </nav>
+    <div class="sidebar-promo">
+        <p>Explore <b>Africa.</b><br>Create Forever<br>Memories.</p>
+        <a href="{% url 'index' %}">Visit website <span>&#8599;</span></a>
+    </div>
+</aside>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+{% load tour_extras %}
+
+{% block title %}Profile - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="profile-section">
+    <div class="container">
+        <div class="profile-grid">
+            <div class="profile-card">
+                <div class="profile-avatar"><i class="fas fa-user-circle"></i></div>
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p class="profile-email"><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                <p class="profile-username"><i class="fas fa-user"></i> @{{ user.username }}</p>
+                
+                <div class="profile-stats">
+                    <div class="stat"><span class="number">{{ user.bookings.count }}</span><span class="label">Bookings</span></div>
+                    <div class="stat"><span class="number">{{ user.bookings.filter.status|length }}</span><span class="label">Confirmed</span></div>
+                </div>
+            </div>
+            
+            <div class="profile-bookings">
+                <h3>Recent Bookings</h3>
+                {% if bookings %}
+                    <div class="bookings-list">
+                        {% for booking in bookings %}
+                            <div class="booking-mini">
+                                <div class="booking-info">
+                                    <h4>{{ booking.trip.name }}</h4>
+                                    <p>{{ booking.trip.start_date|date:"d M Y" }}</p>
+                                </div>
+                                <span class="badge badge-{{ booking.status|status_badge }}">{{ booking.get_status_display }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <a href="{% url 'my_bookings' %}" class="btn-small">View All</a>
+                {% else %}
+                    <p>No bookings yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

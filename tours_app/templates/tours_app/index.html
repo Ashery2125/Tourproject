@@ -1,0 +1,164 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero" id="home">
+    {% with sample_poster='/static/tours_app/images/hero-poster.jpg' sample_video='/static/tours_app/videos/hero-sample.mp4' %}
+    <div class="hero-video-bg" style="background-image: url('{{ appearance.hero_poster_url|default:sample_poster }}');">
+        <video id="heroVideo" autoplay muted loop playsinline preload="metadata" poster="{{ appearance.hero_poster_url|default:sample_poster }}" aria-label="Safari landscape video">
+            <source src="{{ appearance.hero_video_url|default:sample_video }}" type="video/mp4">
+            Your browser does not support background video.
+        </video>
+        <div class="hero-overlay"></div>
+    </div>
+    {% endwith %}
+    <div class="container hero-content" data-aos="fade-up">
+        <div class="hero-grid">
+            <div class="hero-copy">
+                <div class="hero-badge">
+                    <i class="fas fa-tree"></i> {{ appearance.hero_badge|default:'Arusha safari journeys' }}
+                </div>
+                <h1>Luxury Safari Adventures in <span>Arusha</span></h1>
+                <p>Curated Arusha getaway experiences with premium lodges, local culture, and unforgettable wildlife moments.</p>
+                <div class="hero-buttons">
+                    <a href="{% url 'trips' %}" class="btn-primary"><i class="fas fa-route"></i> Book Your Safari</a>
+                    <a href="#home" id="watchSafariVideoButton" class="btn-secondary"><i class="fas fa-play"></i> Watch Safari Video</a>
+                </div>
+                <div class="hero-search">
+                    <form action="{% url 'trips' %}" method="get">
+                        <div class="search-field">
+                            <label>Destination</label>
+                            <select name="destination">
+                                <option>All Destinations</option>
+                                <option>Arusha National Park</option>
+                                <option>Lake Duluti</option>
+                                <option>Mount Meru</option>
+                                <option>Arusha Hotels</option>
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <label>Duration</label>
+                            <select name="duration">
+                                <option>Any Length</option>
+                                <option>3-5 Days</option>
+                                <option>6-9 Days</option>
+                                <option>10+ Days</option>
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <label>Guests</label>
+                            <select name="guests">
+                                <option>2 Guests</option>
+                                <option>4 Guests</option>
+                                <option>6 Guests</option>
+                                <option>8+ Guests</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary btn-block">Search Safari</button>
+                    </form>
+                </div>
+                <div class="hero-trust">
+                    <div class="trust-item"><i class="fas fa-star"></i> 4.9 Rating</div>
+                    <div class="trust-item"><i class="fas fa-users"></i> 500+ Travelers</div>
+                    <div class="trust-item"><i class="fas fa-certificate"></i> 24/7 Support</div>
+                </div>
+            </div>
+            <div class="hero-media">
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1518684079-64c5db4c5f39?auto=format&fit=crop&w=900&q=80" alt="Safari jeep in Tanzania">
+                </div>
+                {% if featured_trips %}
+                <div class="hero-info-card" data-aos="fade-left">
+                    <div class="info-top">
+                        <span>Featured Safari</span>
+                        <h3>{{ featured_trips.0.name }}</h3>
+                    </div>
+                    <div class="info-stats">
+                        <div><strong class="price-value" data-usd="{{ featured_trips.0.price_per_person }}">${{ featured_trips.0.price_per_person }}</strong><span>per person</span></div>
+                        <div><strong>{{ featured_trips.0.available_seats }}</strong><span>Seats left</span></div>
+                        <div><strong>{{ featured_trips.0.duration_days }}d</strong><span>Duration</span></div>
+                    </div>
+                    <a href="{% url 'trip_detail' featured_trips.0.id %}" class="btn-small">View Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="featured" class="featured-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Featured Arusha Safaris</h2>
+            <p>Choose the perfect Arusha stay, thrill, and lodge experience</p>
+        </div>
+        <div class="trip-grid">
+            {% for trip in featured_trips %}
+            <div class="trip-card" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="trip-image">
+                    <img src="{{ trip.image_url }}" alt="{{ trip.name }}">
+                    <div class="trip-badge">
+                        <span class="badge-available"><i class="fas fa-check-circle"></i> Available</span>
+                    </div>
+                    <div class="trip-price">
+                        <span class="price-value" data-usd="{{ trip.price_per_person }}">${{ trip.price_per_person }}</span> <small>/person</small>
+                    </div>
+                </div>
+                <div class="trip-content">
+                    <h3>{{ trip.name }}</h3>
+                    <p class="trip-meta"><i class="fas fa-calendar-alt"></i> {{ trip.start_date|date:"d M Y" }} <i class="fas fa-clock"></i> {{ trip.duration_days }} days</p>
+                    <p class="trip-description">{{ trip.description|truncatechars:80 }}</p>
+                    <div class="trip-footer">
+                        <span class="seats"><i class="fas fa-chair"></i> {{ trip.available_seats }}/{{ trip.total_seats }}</span>
+                        <a href="{% url 'trip_detail' trip.id %}" class="btn-small">View Details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-trips">No trips available at the moment. Please check back later.</p>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'trips' %}" class="btn-primary btn-lg"><i class="fas fa-eye"></i> View All Trips</a>
+        </div>
+    </div>
+</section>
+
+<section class="destinations-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Popular Arusha Destinations</h2>
+            <p>Discover the most loved places, hotels and attractions in Arusha</p>
+        </div>
+        <div class="destination-grid">
+            <div class="dest-card" data-aos="flip-left">
+                <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600');"></div>
+                <div class="dest-content"><h3>Arusha National Park</h3><p>Wildlife & Game Drive</p><span class="rating">⭐ 4.9</span></div>
+            </div>
+            <div class="dest-card" data-aos="flip-left" data-aos-delay="100">
+                <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=600');"></div>
+                <div class="dest-content"><h3>Lake Duluti</h3><p>Lakefront Retreat</p><span class="rating">⭐ 4.8</span></div>
+            </div>
+            <div class="dest-card" data-aos="flip-left" data-aos-delay="200">
+                <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1570481662006-a3a1374699e8?w=600');"></div>
+                <div class="dest-content"><h3>Mount Meru</h3><p>Climb & Scenic Views</p><span class="rating">⭐ 4.7</span></div>
+            </div>
+            <div class="dest-card" data-aos="flip-left" data-aos-delay="300">
+                <div class="dest-image" style="background-image: url('https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=600');"></div>
+                <div class="dest-content"><h3>Arusha Hotels</h3><p>City Lodges & Boutique Stays</p><span class="rating">⭐ 4.6</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container" data-aos="zoom-in">
+        <h2>Ready for Adventure?</h2>
+        <p>Sign up now and book your dream safari today</p>
+        <div class="cta-buttons">
+            <a href="{% url 'register' %}" class="btn-primary"><i class="fas fa-user-plus"></i> Register Now</a>
+            <a href="{% url 'login' %}" class="btn-secondary"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'tours_app/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - WildVista Safaris{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+        <h1>{{ page_title }}</h1>
+        <p>Find the perfect safari adventure for you</p>
+    </div>
+</section>
+
+<section class="trips-section">
+    <div class="container">
+        <div class="search-filter">
+            <form method="get" class="search-form">
+                <div class="search-grid">
+                    <div class="search-field">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="destination" placeholder="Search destination..." value="{{ request.GET.destination }}">
+                    </div>
+                    <div class="search-field">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+                    </div>
+                    <div class="search-field">
+                        <i class="fas fa-calendar-check"></i>
+                        <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+                    </div>
+                    <div class="search-field">
+                        <select name="trip_type">
+                            <option value="">All Types</option>
+                            {% for type, label in form.fields.trip_type.choices %}
+                                {% if type %}
+                                    <option value="{{ type }}" {% if request.GET.trip_type == type %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="search-field price-range">
+                        <input type="number" name="min_price" placeholder="Min price" value="{{ request.GET.min_price }}">
+                        <span>-</span>
+                        <input type="number" name="max_price" placeholder="Max price" value="{{ request.GET.max_price }}">
+                    </div>
+                    <button type="submit" class="btn-primary"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="trip-grid">
+            {% for trip in trips %}
+            <div class="trip-card">
+                <div class="trip-image">
+                    <img src="{{ trip.image_url }}" alt="{{ trip.name }}">
+                    <div class="trip-badge">
+                        <span class="badge-available"><i class="fas fa-check-circle"></i> Available</span>
+                    </div>
+                    <div class="trip-price">
+                        <span class="price-value" data-usd="{{ trip.active_price }}">${{ trip.active_price }}</span>
+                        <small>/day</small>
+                    </div>
+                    {% if trip.is_offer and trip.discount_price %}
+                    <div class="offer-badge"><span class="price-value" data-usd="{{ trip.discount_price }}">Offer: ${{ trip.discount_price }}</span> / day</div>
+                    {% endif %}
+                </div>
+                <div class="trip-content">
+                    <h3>{{ trip.name }}</h3>
+                    <p class="trip-meta"><i class="fas fa-calendar-alt"></i> {{ trip.start_date|date:"d M Y" }} <i class="fas fa-clock"></i> {{ trip.duration_days }} days</p>
+                    <p class="trip-description">{{ trip.description|truncatechars:80 }}</p>
+                    <div class="trip-footer">
+                        <span class="seats"><i class="fas fa-fire"></i> Viti {{ trip.available_seats }} vimebaki</span>
+                        <a href="{% url 'trip_detail' trip.id %}" class="btn-small">Book Now <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-trips">No trips match your criteria.</p>
+            {% endfor %}
+        </div>
+        
+        {% if trips.has_other_pages %}
+        <div class="pagination">
+            {% if trips.has_previous %}
+                <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link"><i class="fas fa-angle-double-left"></i></a>
+                <a href="?page={{ trips.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link"><i class="fas fa-angle-left"></i></a>
+            {% endif %}
+            <span class="page-current">Page {{ trips.number }} of {{ trips.paginator.num_pages }}</span>
+            {% if trips.has_next %}
+                <a href="?page={{ trips.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link"><i class="fas fa-angle-right"></i></a>
+                <a href="?page={{ trips.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="page-link"><i class="fas fa-angle-double-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
